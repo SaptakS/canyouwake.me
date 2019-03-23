@@ -14,6 +14,16 @@ function getRandomInt(min, max) {
 }
 
 function main () {
+  /* Routing different URLs */
+  if (window.location.hash && window.location.hash.split('#!')) {
+    const route = window.location.hash.split('#!')[1];
+    renderRoutes(route);
+  } else {
+    renderDefault();
+  }
+}
+
+function renderDefault() {
   if (localStorage.getItem('alarmRequestsXvdgf')) {
     localStorage.alarmRequestsXvdgf = Number(localStorage.getItem('alarmRequestsXvdgf')) + 1;
   } else {
@@ -27,6 +37,27 @@ function main () {
     alarmingText = alarmingReactions[Number(localStorage.getItem('alarmRequestsXvdgf'))];
   }
 
+  document.getElementById('alarming-text').innerHTML = alarmingText;
+}
+
+function renderRoutes(route) {
+  // Set alarms with mins and hours
+  const route_parts = route.split('/');
+  if (route_parts.length === 4 && route_parts[1] === 'in' && 
+    (route_parts[3] === 'mins' || route_parts[3] === 'mins')
+  ) {
+    console.log('Yay!!! Min Route');
+    renderMin(route_parts[2]);
+  }
+}
+
+function renderMin(minutes) {
+  let alarmingText = '';
+  if (minutes < 30) {
+    alarmingText = 'You really think you can wake up in ' + minutes + ' min? LOL!';
+  } else if (minutes >= 30) {
+    alarmingText = 'Hmm, you want a nap eh? Will see';
+  }
   document.getElementById('alarming-text').innerHTML = alarmingText;
 }
 
