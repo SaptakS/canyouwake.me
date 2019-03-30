@@ -1,26 +1,27 @@
+/* Default Reactions */
 const alarmingReactions = [
-    'No',
-    'Nope',
-    'Not gonna happen',
-    'Who do you think I am?',
-    'Don\'t you have an alarm clock for this?',
-    'Just use your phone\'s alarm clock!!! OMG!',
+  'No',
+  'Nope',
+  'Not gonna happen',
+  'Who do you think I am?',
+  'Don\'t you have an alarm clock for this?',
+  'Just use your phone\'s alarm clock!!! OMG!',
 ];
 
+/* Routes */
+const routes = [
+  {route: 'in\\/(.*)\\/mi(n|ns|nute|nutes)$', view: renderMin},
+];
+
+/* Util Functions */
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
 }
 
-function main () {
-  /* Routing different URLs */
-  if (window.location.hash && window.location.hash.split('#!')) {
-    const route = window.location.hash.split('#!')[1];
-    renderRoutes(route);
-  } else {
-    renderDefault();
-  }
+function getRoute(url) {
+  return url.hash.split('#!')[1];
 }
 
 function renderDefault() {
@@ -41,17 +42,19 @@ function renderDefault() {
 }
 
 function renderRoutes(route) {
-  // Set alarms with mins and hours
-  const route_parts = route.split('/');
-  if (route_parts.length === 4 && route_parts[1] === 'in' && 
-    (route_parts[3] === 'mins' || route_parts[3] === 'mins')
-  ) {
-    console.log('Yay!!! Min Route');
-    renderMin(route_parts[2]);
+  for (var i = 0; i < routes.length; i++) {
+    const re = new RegExp(routes[i].route);
+    let match = route.match(re);
+    if (match) {
+      match.shift();
+      routes[i].view(match);
+      break;
+    }
   }
 }
 
 function renderMin(minutes) {
+  minutes = minutes[0]
   let alarmingText = '';
   if (minutes < 30) {
     alarmingText = 'You really think you can wake up in ' + minutes + ' min? LOL!';
@@ -61,6 +64,17 @@ function renderMin(minutes) {
   document.getElementById('alarming-text').innerHTML = alarmingText;
 }
 
+function main () {
+  /* Routing different URLs */
+  if (window.location.hash && window.location.hash.split('#!')) {
+    const route = getRoute(window.location);
+    renderRoutes(route);
+  } else {
+    renderDefault();
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function(event) {
   main();
 });
+window.onhashchange = main;
