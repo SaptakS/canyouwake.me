@@ -24,6 +24,7 @@ function getRoute(url) {
   return url.hash.split('#!')[1];
 }
 
+/* render based on route */
 function renderDefault() {
   if (localStorage.getItem('alarmRequestsXvdgf')) {
     localStorage.alarmRequestsXvdgf = Number(localStorage.getItem('alarmRequestsXvdgf')) + 1;
@@ -54,7 +55,7 @@ function renderRoutes(route) {
 }
 
 function renderMin(minutes) {
-  minutes = minutes[0]
+  minutes = minutes[0];
   let alarmingText = '';
   if (minutes < 30) {
     alarmingText = 'You really think you can wake up in ' + minutes + ' min? LOL!';
@@ -62,6 +63,18 @@ function renderMin(minutes) {
     alarmingText = 'Hmm, you want a nap eh? Will see';
   }
   document.getElementById('alarming-text').innerHTML = alarmingText;
+  setAlarm(minutes * 60);
+}
+
+
+/* Alarm Code */
+function setAlarm(seconds) {
+  setInterval(
+    function() {
+      alert("wake up motherfucker");
+    },
+    (seconds * 1000)
+  );
 }
 
 function main () {
